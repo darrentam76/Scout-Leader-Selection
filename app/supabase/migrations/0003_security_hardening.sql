@@ -3,7 +3,13 @@
 -- Adds: audit_log table + trigger on leaders_preferences, plus its own purge job.
 
 -- 1) Re-point the 180-day retention job at the real data table.
-select cron.unschedule('purge_submissions_after_180d');
+-- cron.unschedule errors if the job does not exist, so guard both calls.
+do $$
+begin
+  if exists (select 1 from cron.job where jobname = 'purge_submissions_after_180d') then
+    perform cron.unschedule('purge_submissions_after_180d');
+  end if;
+end $$;
 
 select cron.schedule(
   'purge_leaders_preferences_after_180d',
@@ -50,7 +56,12 @@ after insert or update or delete on public.leaders_preferences
 for each row execute function public.audit_leaders_preferences();
 
 -- 3) Purge audit entries after 180 days as well.
-select cron.unschedule('purge_audit_log_after_180d');
+do $$
+begin
+  if exists (select 1 from cron.job where jobname = 'purge_audit_log_after_180d') then
+    perform cron.unschedule('purge_audit_log_after_180d');
+  end if;
+end $$;
 
 select cron.schedule(
   'purge_audit_log_after_180d',
