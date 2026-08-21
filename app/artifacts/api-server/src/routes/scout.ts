@@ -35,11 +35,32 @@ const FALLBACK_EVENTS = [
   { id: "household-badge", name: "家務章", nameEn: "Household Badge", unit: "P1–P6", date: "2027-04", helpers: 4 },
 ];
 
-router.post("/admin/login", (req, res): void => {
+const LIMITS = {
+  fullName: 60,
+  unit: 20,
+  notes: 1000,
+  skillItem: 80,
+  skillCount: 5,
+};
+
+function validateSubmissionLimits(body: unknown): string | null {
+  if (typeof body !== "object" || body === null) return "Invalid body";
+  const b = body as Record<string, unknown>;
+  if (typeof b.fullName === "string" && b.fullName.length > LIMITS.fullName) return "姓名過長";
+  if (typeof b.unit === "string" && b.unit.length > LIMITS.unit) return "單位名稱過長";
+  if (typeof b.notes === "string" && b.notes.length > LIMITS.notes) return "備註過長（上限 1000 字）";
+  if (Array.isArray(b.skills)) {
+    if (b.skills.length > LIMITS.skillCount) return "專長最多 5 項";
+    if (b.skills.some((s) => typeof s !== "string" || s.length > LIMITS.skillItem)) return "專長項目格式不正確";
+  }
+  return null;
+}
+
+router.post("/scout/admin/login", (req, res): void => {
   adminAuth.login(req, res);
 });
 
-router.post("/admin/logout", (req, res): void => {
+router.post("/scout/admin/logout", (req, res): void => {
   adminAuth.logout(req, res);
 });
 
@@ -67,7 +88,7 @@ router.get("/scout/events", async (_req, res): Promise<void> => {
 
 router.get("/scout/submissions", adminAuth.requireAdmin, async (_req, res): Promise<void> => {
   const { data, error } = await supabase
-    .from("submissions")
+    .from("leaders_preferences")
     .select("*")
     .order("created_at", { ascending: false });
 
@@ -92,6 +113,18 @@ router.get("/scout/submissions", adminAuth.requireAdmin, async (_req, res): Prom
 });
 
 router.post("/scout/submissions", async (req, res): Promise<void> => {
+  if (req.body && typeof req.body === "object") {
+    req.body.yearsExp = Number(req.body.yearsExp);
+    req.body.targetIcCount = Number(req.body.targetIcCount);
+  }
+
+  const limitError = validateSubmissionLimits(req.body);
+  if (limitError) {
+    req.log.warn({ reason: limitError }, "Scout submission rejected by length limits");
+    res.status(400).json({ error: limitError });
+    return;
+  }
+
   const parsed = CreateScoutSubmissionBody.safeParse(req.body);
   if (!parsed.success) {
     req.log.warn({ errors: parsed.error.message }, "Invalid scout submission");
@@ -100,7 +133,7 @@ router.post("/scout/submissions", async (req, res): Promise<void> => {
   }
   const d = parsed.data;
   const { data, error } = await supabase
-    .from("submissions")
+    .from("leaders_preferences")
     .insert({
       full_name: d.fullName,
       gender: d.gender ?? "未提供",
@@ -144,7 +177,7 @@ router.post("/scout/submissions", async (req, res): Promise<void> => {
 });
 
 router.get("/scout/summary", adminAuth.requireAdmin, async (_req, res): Promise<void> => {
-  const { data, error } = await supabase.from("submissions").select("is_senior, skills");
+  const { data, error } = await supabase.from("leaders_preferences").select("is_senior, skills");
   if (error) throw error;
 
   const rows = data ?? [];

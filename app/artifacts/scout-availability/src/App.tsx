@@ -42,6 +42,7 @@ import { ErrorBoundary } from '@/components/error-boundary';
 import { Toaster } from '@/components/ui/toaster';
 import { TooltipProvider } from '@/components/ui/tooltip';
 import NotFound from '@/pages/not-found';
+import PrivacyPage from '@/pages/privacy';
 import { Link, Route, Switch, Router as WouterRouter, useLocation } from 'wouter';
 
 const queryClient = new QueryClient();
@@ -118,6 +119,9 @@ function TopBar({ admin = false }: { admin?: boolean }) {
     <header className="flex items-center justify-between border-b border-[#d9cfbd] px-5 py-4 md:px-10">
       <Brand />
       <div className="flex items-center gap-2">
+        <Link href="/privacy" className="flex items-center gap-2 rounded-full px-3 py-2 text-sm font-bold text-[#617177] transition hover:bg-[#e7dfcf]" data-testid="link-privacy">
+          <LockKeyhole size={16} /> <span className="hidden sm:inline">私隱政策</span>
+        </Link>
         {admin ? (
           <Link href="/" className="hidden items-center gap-2 rounded-full px-3 py-2 text-sm font-bold text-[#617177] transition hover:bg-[#e7dfcf] sm:flex" data-testid="link-submit-form">
             <ArrowLeft size={16} /> 回到填寫表單
@@ -243,7 +247,7 @@ function ChatWidget() {
   const [text, setText] = useState('');
   const chat = useChatWithScoutAssistant();
   const [messages, setMessages] = useState<ChatMessage[]>([
-    { role: 'assistant', content: '你好！我可以協助說明填表流程、主 IC 分工規則，以及資料私隱與安全安排。' },
+    { role: 'assistant', content: '你好！我是 AI 助手，可以協助說明填表流程、主 IC 分工規則，以及資料私隱與安全安排。（AI 生成內容，僅供參考）' },
   ]);
   const send = () => {
     const question = text.trim();
@@ -261,7 +265,7 @@ function ChatWidget() {
         <section className="mb-3 w-[min(23rem,calc(100vw-2.5rem))] overflow-hidden rounded-3xl border border-[#d9cfbd] bg-[#fbf8ef] shadow-[0_22px_60px_rgba(32,54,64,.28)]" aria-label="資料私隱與流程助手" data-testid="chat-widget">
           <header className="flex items-center gap-3 bg-[#203640] px-4 py-3.5 text-[#f7f1df]">
             <span className="flex h-9 w-9 items-center justify-center rounded-xl bg-[#f47b35] text-[#203640]"><ShieldCheck size={19} /></span>
-            <div className="min-w-0 flex-1"><strong className="block text-sm">資料私隱與流程助手</strong><span className="block text-[11px] text-[#c6d1cb]">只回答小三童軍系統相關問題</span></div>
+            <div className="min-w-0 flex-1"><strong className="block text-sm">資料私隱與流程助手</strong><span className="block text-[11px] text-[#c6d1cb]">AI 助手 · 只回答小三童軍系統相關問題</span></div>
             <button type="button" onClick={() => setOpen(false)} className="rounded-full p-1.5 text-[#c6d1cb] hover:bg-white/10" aria-label="關閉助手"><X size={18} /></button>
           </header>
           <div className="max-h-72 space-y-3 overflow-y-auto px-4 py-4">
@@ -276,7 +280,8 @@ function ChatWidget() {
               <input value={text} disabled={chat.isPending} onChange={(event) => setText(event.target.value)} onKeyDown={(event) => { if (event.key === 'Enter') send(); }} placeholder="輸入你的問題…" className="min-w-0 flex-1 bg-transparent px-2 text-sm outline-none placeholder:text-[#9a9b93] disabled:opacity-60" data-testid="input-chat-message" />
               <button type="button" disabled={chat.isPending} onClick={send} className="flex h-9 w-9 items-center justify-center rounded-xl bg-[#39725e] text-white transition hover:bg-[#285343] disabled:opacity-60" aria-label="傳送問題" data-testid="button-send-chat">{chat.isPending ? <RefreshCw size={16} className="animate-spin" /> : <Send size={16} />}</button>
             </div>
-            <p className="mt-2 flex items-center gap-1 text-[10px] text-[#8a9491]"><LockKeyhole size={11} />請勿輸入身分證號、住址或其他非必要敏感資料。</p>
+            <p className="mt-2 flex items-center gap-1 text-[10px] text-[#8a9491]"><Sparkles size={11} />回覆由 AI 生成，僅供參考；如有疑問請聯絡領隊團隊。</p>
+            <p className="mt-1 flex items-center gap-1 text-[10px] text-[#8a9491]"><LockKeyhole size={11} />請勿輸入身分證號、住址或其他非必要敏感資料。</p>
           </div>
         </section>
       )}
@@ -448,7 +453,7 @@ function AdminDashboard() {
 
 function Router() {
   const [location] = useLocation();
-  return <ErrorBoundary resetKey={location}><Switch><Route path="/" component={LeaderForm} /><Route path="/admin" component={AdminDashboard} /><Route component={NotFound} /></Switch></ErrorBoundary>;
+  return <ErrorBoundary resetKey={location}><Switch><Route path="/" component={LeaderForm} /><Route path="/admin" component={AdminDashboard} /><Route path="/privacy" component={PrivacyPage} /><Route component={NotFound} /></Switch></ErrorBoundary>;
 }
 
 function App() {
