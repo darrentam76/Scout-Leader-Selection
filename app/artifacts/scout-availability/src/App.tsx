@@ -322,8 +322,8 @@ function SuccessPanel({ submission, onReset }: { submission: LeaderPreference; o
       <div className="animate-pop w-full rounded-[2rem] border border-[#d9cfbd] bg-[#fbf8ef] p-7 shadow-[var(--shadow-md)] md:p-12">
         <div className="mb-8 flex h-16 w-16 items-center justify-center rounded-2xl bg-[#39725e] text-[#f7f1df] shadow-[0_4px_0_#285343]"><CheckCircle2 size={33} /></div>
         <p className="mb-2 text-xs font-black tracking-[.18em] text-[#39725e]">已收到你的回覆</p>
-        <h1 className="text-3xl font-black tracking-tight text-[#203640] md:text-5xl">謝謝你，{submission.fullName}。</h1>
-        <p className="mt-4 max-w-lg leading-7 text-[#617177]">你的年度意願已經交到領隊團隊手上。我們會依照整體回覆安排活動分工，期待在營地見到你。</p>
+        <h1 className="text-3xl font-black tracking-tight text-[#203640] md:text-5xl">三年級團長謝謝你，{submission.fullName}。</h1>
+        <p className="mt-4 max-w-lg leading-7 text-[#617177]">你的年度意願已經交到領隊團隊手上。我們會依照整體回覆安排活動分工，期待在營地見到你。<span className="mt-3 block font-black text-[#39725e]">—— 三年級團長</span></p>
         <div className="my-9 grid gap-3 border-y border-[#d9cfbd] py-5 sm:grid-cols-3">
           <div><span className="block text-xs text-[#8a9491]">所屬單位</span><strong className="mt-1 block text-[#203640]" data-testid="text-success-unit">{submission.unit}</strong></div>
           <div><span className="block text-xs text-[#8a9491]">你的專長</span><strong className="mt-1 block text-[#203640]" data-testid="text-success-skills">{submission.skills.length ? `${submission.skills.length} 項` : '未填寫'}</strong></div>
@@ -338,6 +338,9 @@ function SuccessPanel({ submission, onReset }: { submission: LeaderPreference; o
 function LeaderForm() {
   const [step, setStep] = useState(0);
   const [form, setForm] = useState<FormState>(initialForm);
+  const [firstName, setFirstName] = useState('');
+  const [lastName, setLastName] = useState('');
+  const displayName = `${firstName} ${lastName}`.trim();
   const [confirm, setConfirm] = useState(false);
   const [submitted, setSubmitted] = useState<LeaderPreference | null>(null);
   const queryClient = useQueryClient();
@@ -353,13 +356,13 @@ function LeaderForm() {
     else if (!max || current.length < max) update(key, [...current, value] as FormState[typeof key]);
   };
   const goNext = () => {
-    if (step === 0 && (!form.fullName.trim() || !form.unit.trim())) return;
+    if (step === 0 && (!firstName.trim() || !lastName.trim() || !form.unit.trim())) return;
     if (step === 1 && form.skills.length === 0) return;
     if (step < 3) setStep((current) => current + 1);
     else setConfirm(true);
   };
   const confirmSubmit = () => {
-    createSubmission.mutate({ data: form }, {
+    createSubmission.mutate({ data: { ...form, fullName: displayName } }, {
       onSuccess: (result) => {
         setSubmitted(result);
         setConfirm(false);
@@ -379,7 +382,7 @@ function LeaderForm() {
           <div className="mx-auto max-w-2xl">
             <ProgressRail step={step} />
             <div className="animate-rise" key={step}>
-              {step === 0 && <section><p className="mb-2 text-xs font-black tracking-[.16em] text-[#e26d32]">第一站 · 基本資料</p><h2 className="text-3xl font-black tracking-tight text-[#203640] md:text-4xl">先讓我們認識你。</h2><p className="mt-3 text-sm leading-6 text-[#758185]">簡單幾題，讓今年的分工更貼近每位夥伴。</p><div className="mt-9 space-y-5"><TextField id="full-name" label="姓名" value={form.fullName} onChange={(value) => update('fullName', value)} placeholder="請輸入你的姓名" required /><div className="grid gap-5 sm:grid-cols-2"><label><FieldLabel required>性別 <span className="text-xs font-normal text-[#8a9491]">Gender</span></FieldLabel><select value={form.gender} onChange={(event) => update('gender', event.target.value as FormState['gender'])} className="h-12 w-full rounded-xl border border-[#d5cbbb] bg-[#fbf8ef] px-4 text-sm font-bold text-[#344b51] outline-none focus:border-[#39725e]" data-testid="select-gender"><option value="男">男 Male</option><option value="女">女 Female</option></select></label><label><FieldLabel required>所屬小組／小幼童軍團 <span className="text-xs font-normal text-[#8a9491]">Unit</span></FieldLabel><select value={form.unit} onChange={(event) => update('unit', event.target.value)} className="h-12 w-full rounded-xl border border-[#d5cbbb] bg-[#fbf8ef] px-4 text-sm font-bold text-[#344b51] outline-none focus:border-[#39725e]" data-testid="select-unit"><option value="">請選擇</option><option value="P1">P1</option><option value="P2">P2</option><option value="P3">P3</option><option value="P4">P4</option><option value="P5">P5</option><option value="P6">P6</option><option value="Secondary">中學 Secondary</option><option value="Special">特別組 Special</option></select></label></div><div className="grid gap-5 sm:grid-cols-2"><label><FieldLabel required>童軍資歷／年資 <span className="text-xs font-normal text-[#8a9491]">Experience</span></FieldLabel><select value={form.yearsExp} onChange={(event) => setExperience(Number(event.target.value))} className="h-12 w-full rounded-xl border border-[#d5cbbb] bg-[#fbf8ef] px-4 text-sm font-bold text-[#344b51] outline-none focus:border-[#39725e]" data-testid="select-years-exp"><option value={0}>請選擇</option><option value={1}>1 年</option><option value={2}>2 年</option><option value={3}>3 年</option><option value={4}>4–6 年</option><option value={7}>7–10 年</option><option value={11}>11–15 年</option><option value={16}>16–20 年</option></select></label><label><FieldLabel>期望擔任主 IC 次數 <span className="text-xs font-normal text-[#8a9491]">Target</span></FieldLabel><select value={form.targetIcCount} onChange={(event) => update('targetIcCount', Number(event.target.value))} className="h-12 w-full rounded-xl border border-[#d5cbbb] bg-[#fbf8ef] px-4 text-sm font-bold text-[#344b51] outline-none focus:border-[#39725e]" data-testid="select-target-ic"><option value={2}>2 次</option><option value={3}>3 次</option><option value={4}>4 次</option></select></label></div><div className={`rounded-2xl border p-4 ${form.isSenior ? 'border-[#b8d4bd] bg-[#e6f0e7] text-[#285343]' : 'border-[#f3d788] bg-[#fff4cd] text-[#83651c]'}`} data-testid="text-seniority-badge"><div className="flex items-center gap-2 font-black">{form.isSenior ? <ShieldCheck size={18} /> : <Sparkles size={18} />}{form.isSenior ? 'Senior Scouter（資深領袖）' : 'Junior Scouter（新進領袖）'}</div><p className="mt-1 text-xs opacity-75">{form.isSenior ? '3 年或以上童軍資歷' : '1–2 年童軍資歷'}</p></div>{form.targetIcCount > 3 && <div className="rounded-2xl border border-[#e7b1a6] bg-[#fff2ee] p-4 text-sm text-[#9c4237]" data-testid="text-ic-cap-warning"><strong>工作量上限提醒：</strong> 每位領袖實際主 IC 次數最多為 3 次；領隊團隊會按整體安排平衡分工。</div>}</div></section>}
+              {step === 0 && <section><p className="mb-2 text-xs font-black tracking-[.16em] text-[#e26d32]">第一站 · 基本資料</p><h2 className="text-3xl font-black tracking-tight text-[#203640] md:text-4xl">先讓我們認識你。</h2><p className="mt-3 text-sm leading-6 text-[#758185]">簡單幾題，讓今年的分工更貼近每位夥伴。</p><div className="mt-9 space-y-5"><div><FieldLabel required>姓名 <span className="text-xs font-normal text-[#8a9491]">Name（英文）</span></FieldLabel><div className="grid gap-4 sm:grid-cols-2"><input id="first-name" data-testid="input-first-name" value={firstName} onChange={(event) => setFirstName(event.target.value)} type="text" placeholder="First Name" aria-label="First Name" className="h-12 w-full rounded-xl border border-[#d5cbbb] bg-[#fbf8ef] px-4 text-[15px] text-[#203640] outline-none transition placeholder:text-[#a7a59a] focus:border-[#f47b35] focus:ring-4 focus:ring-[#f47b35]/15" /><input id="last-name" data-testid="input-last-name" value={lastName} onChange={(event) => setLastName(event.target.value)} type="text" placeholder="Last Name" aria-label="Last Name" className="h-12 w-full rounded-xl border border-[#d5cbbb] bg-[#fbf8ef] px-4 text-[15px] text-[#203640] outline-none transition placeholder:text-[#a7a59a] focus:border-[#f47b35] focus:ring-4 focus:ring-[#f47b35]/15" /></div><p className="mt-2 text-xs text-[#8a9491]" data-testid="text-name-hint">第一版請填寫英文姓名。</p></div><div className="grid gap-5 sm:grid-cols-2"><label><FieldLabel required>性別 <span className="text-xs font-normal text-[#8a9491]">Gender</span></FieldLabel><select value={form.gender} onChange={(event) => update('gender', event.target.value as FormState['gender'])} className="h-12 w-full rounded-xl border border-[#d5cbbb] bg-[#fbf8ef] px-4 text-sm font-bold text-[#344b51] outline-none focus:border-[#39725e]" data-testid="select-gender"><option value="男">男 Male</option><option value="女">女 Female</option></select></label><label><FieldLabel required>所屬小組／小幼童軍團 <span className="text-xs font-normal text-[#8a9491]">Unit</span></FieldLabel><select value={form.unit} onChange={(event) => update('unit', event.target.value)} className="h-12 w-full rounded-xl border border-[#d5cbbb] bg-[#fbf8ef] px-4 text-sm font-bold text-[#344b51] outline-none focus:border-[#39725e]" data-testid="select-unit"><option value="">請選擇</option><option value="P1">P1</option><option value="P2">P2</option><option value="P3">P3</option><option value="P4">P4</option><option value="P5">P5</option><option value="P6">P6</option><option value="Secondary">中學 Secondary</option><option value="Special">特別組 Special</option></select></label></div><div className="grid gap-5 sm:grid-cols-2"><label><FieldLabel required>童軍資歷／年資 <span className="text-xs font-normal text-[#8a9491]">Experience</span></FieldLabel><select value={form.yearsExp} onChange={(event) => setExperience(Number(event.target.value))} className="h-12 w-full rounded-xl border border-[#d5cbbb] bg-[#fbf8ef] px-4 text-sm font-bold text-[#344b51] outline-none focus:border-[#39725e]" data-testid="select-years-exp"><option value={0}>請選擇</option><option value={1}>1 年</option><option value={2}>2 年</option><option value={3}>3 年</option><option value={4}>4–6 年</option><option value={7}>7–10 年</option><option value={11}>11–15 年</option><option value={16}>16–20 年</option></select></label><label><FieldLabel>期望擔任主 IC 次數 <span className="text-xs font-normal text-[#8a9491]">Target</span></FieldLabel><select value={form.targetIcCount} onChange={(event) => update('targetIcCount', Number(event.target.value))} className="h-12 w-full rounded-xl border border-[#d5cbbb] bg-[#fbf8ef] px-4 text-sm font-bold text-[#344b51] outline-none focus:border-[#39725e]" data-testid="select-target-ic"><option value={2}>2 次</option><option value={3}>3 次</option><option value={4}>4 次</option></select></label></div><div className={`rounded-2xl border p-4 ${form.isSenior ? 'border-[#b8d4bd] bg-[#e6f0e7] text-[#285343]' : 'border-[#f3d788] bg-[#fff4cd] text-[#83651c]'}`} data-testid="text-seniority-badge"><div className="flex items-center gap-2 font-black">{form.isSenior ? <ShieldCheck size={18} /> : <Sparkles size={18} />}{form.isSenior ? 'Senior Scouter（資深領袖）' : 'Junior Scouter（新進領袖）'}</div><p className="mt-1 text-xs opacity-75">{form.isSenior ? '3 年或以上童軍資歷' : '1–2 年童軍資歷'}</p></div>{form.targetIcCount > 3 && <div className="rounded-2xl border border-[#e7b1a6] bg-[#fff2ee] p-4 text-sm text-[#9c4237]" data-testid="text-ic-cap-warning"><strong>工作量上限提醒：</strong> 每位領袖實際主 IC 次數最多為 3 次；領隊團隊會按整體安排平衡分工。</div>}</div></section>}
               {step === 1 && <section><p className="mb-2 text-xs font-black tracking-[.16em] text-[#e26d32]">第二站 · 技能與經驗</p><h2 className="text-3xl font-black tracking-tight text-[#203640] md:text-4xl">你擅長什麼？</h2><p className="mt-3 text-sm leading-6 text-[#758185]">最多選 5 項，讓夥伴知道什麼時候可以找你。</p><div className="mt-9"><FieldLabel required>我的專長 <span className="ml-1 font-mono text-[11px] font-normal text-[#8d9692]">{form.skills.length}/5</span></FieldLabel><div className="flex flex-wrap gap-2.5">{skillOptions.map((skill) => <ChoiceChip key={skill} id={`skill-${skill}`} label={skill} selected={form.skills.includes(skill)} onClick={() => toggle('skills', skill, 5)} />)}</div><div className="mt-8 rounded-2xl border border-dashed border-[#d5cbbb] bg-[#eee8da]/60 p-4 text-sm leading-6 text-[#758185]"><Sparkles size={17} className="mr-2 inline-block text-[#e26d32]" />不確定怎麼選？想想看：活動中大家最常稱讚你哪件事？</div></div></section>}
               {step === 2 && <section><p className="mb-2 text-xs font-black tracking-[.16em] text-[#e26d32]">第三站 · 年度活動</p><h2 className="text-3xl font-black tracking-tight text-[#203640] md:text-4xl">在哪裡一起出力？</h2><p className="mt-3 text-sm leading-6 text-[#758185]">可以同時選擇主責與協助，告訴我們你的理想參與方式。</p><div className="mt-7 flex flex-wrap gap-3 text-xs font-bold text-[#617177]"><span className="rounded-full bg-[#fce1cd] px-3 py-1.5 text-[#a95027]">主責：我想帶頭規劃</span><span className="rounded-full bg-[#d7e7db] px-3 py-1.5 text-[#285343]">協助：我可以搭把手</span></div><div className="mt-5 space-y-3">{eventsQuery.isLoading ? [1, 2, 3].map((item) => <div className="skel h-[164px] rounded-2xl" key={item} data-testid={`skeleton-event-${item}`} />) : eventsQuery.isError ? <FormError onRetry={() => eventsQuery.refetch()} /> : events.length === 0 ? <div className="rounded-2xl border border-dashed border-[#d5cbbb] p-8 text-center text-sm text-[#758185]" data-testid="state-empty-events">目前還沒有年度活動資料。</div> : events.map((event) => <EventCard key={event.id} event={event} preferred={form.preferredIcEvents.includes(event.id)} helper={form.helperEvents.includes(event.id)} onPreferred={() => toggle('preferredIcEvents', event.id)} onHelper={() => toggle('helperEvents', event.id)} />)}</div></section>}
               {step === 3 && <section><p className="mb-2 text-xs font-black tracking-[.16em] text-[#e26d32]">第四站 · 一起出發</p><h2 className="text-3xl font-black tracking-tight text-[#203640] md:text-4xl">想和誰並肩？</h2><p className="mt-3 text-sm leading-6 text-[#758185]">活動沒有標準答案，找到聊得來、做事有默契的夥伴就很好。</p><div className="mt-9"><FieldLabel>希望合作的夥伴類型 <span className="text-xs font-normal text-[#8a9491]">可選 0–4 項</span></FieldLabel><div className="flex flex-wrap gap-2.5">{partnerOptions.map((partner) => <ChoiceChip key={partner} id={`partner-${partner}`} label={partner} selected={form.preferredPartners.includes(partner)} onClick={() => toggle('preferredPartners', partner, 4)} />)}</div><div className="mt-7"><FieldLabel>還有什麼想告訴領隊團隊？</FieldLabel><textarea value={form.notes} onChange={(event) => update('notes', event.target.value)} placeholder="例如：某些日期不方便、想嘗試的新任務，或一句給夥伴的話……" rows={5} className="w-full resize-none rounded-2xl border border-[#d5cbbb] bg-[#fbf8ef] p-4 text-[15px] leading-7 text-[#203640] outline-none transition placeholder:text-[#a7a59a] focus:border-[#f47b35] focus:ring-4 focus:ring-[#f47b35]/15" data-testid="input-notes" /></div></div></section>}
@@ -389,18 +392,60 @@ function LeaderForm() {
               <span className="font-mono text-[11px] font-bold tracking-widest text-[#9a9b93]" data-testid="text-step-count">{String(step + 1).padStart(2, '0')} / 04</span>
               <button type="button" onClick={goNext} className="flex h-12 items-center gap-2 rounded-xl bg-[#f47b35] px-5 text-sm font-black text-[#203640] shadow-[0_3px_0_#c85f27] transition hover:-translate-y-0.5 active:translate-y-0" data-testid="button-next-step">{step === 3 ? '檢查並送出' : '繼續'}<ArrowRight size={17} /></button>
             </div>
-            {step === 0 && (!form.fullName.trim() || !form.unit.trim()) && <p className="mt-3 text-right text-xs text-[#a95027]" data-testid="text-form-hint">請先填寫姓名與單位</p>}
+            {step === 0 && (!firstName.trim() || !lastName.trim() || !form.unit.trim()) && <p className="mt-3 text-right text-xs text-[#a95027]" data-testid="text-form-hint">請先填寫姓名與單位</p>}
             {step === 1 && form.skills.length === 0 && <p className="mt-3 text-right text-xs text-[#a95027]" data-testid="text-skills-hint">請至少選一項專長</p>}
           </div>
         </main>
       </div>
-      {confirm && <ConfirmModal form={form} events={events} pending={createSubmission.isPending} error={createSubmission.isError} onClose={() => setConfirm(false)} onConfirm={confirmSubmit} />}
+      {confirm && <ConfirmModal form={{ ...form, fullName: displayName }} events={events} pending={createSubmission.isPending} error={createSubmission.isError} onClose={() => setConfirm(false)} onConfirm={confirmSubmit} />}
     </div>
   );
 }
 
 function DashboardSkeleton() {
   return <div className="space-y-3" data-testid="state-loading-dashboard">{[1, 2, 3, 4].map((item) => <div className="skel h-20 rounded-2xl" key={item} />)}</div>;
+}
+
+function AdminLogin({ onSuccess }: { onSuccess: () => void }) {
+  const [password, setPassword] = useState('');
+  const [pending, setPending] = useState(false);
+  const [error, setError] = useState(false);
+  const submit = async () => {
+    const value = password.trim();
+    if (!value || pending) return;
+    setPending(true);
+    setError(false);
+    try {
+      const response = await fetch('/api/scout/admin/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ password: value }),
+      });
+      if (response.ok) onSuccess();
+      else setError(true);
+    } catch {
+      setError(true);
+    }
+    setPending(false);
+  };
+  return (
+    <div className="paper-grain min-h-[100dvh]">
+      <TopBar admin />
+      <main className="mx-auto flex min-h-[calc(100dvh-73px)] max-w-md items-center px-5 py-12">
+        <div className="animate-pop w-full rounded-[2rem] border border-[#d9cfbd] bg-[#fbf8ef] p-7 shadow-[var(--shadow-md)] md:p-10">
+          <div className="mb-7 flex h-14 w-14 items-center justify-center rounded-2xl bg-[#203640] text-[#f6c667]"><LockKeyhole size={26} /></div>
+          <p className="mb-2 text-xs font-black tracking-[.18em] text-[#39725e]">領隊專區 · ADMIN</p>
+          <h1 className="text-2xl font-black tracking-tight text-[#203640] md:text-3xl">請先登入</h1>
+          <p className="mt-3 text-sm leading-6 text-[#758185]">看板只供領隊團隊查看。請輸入管理員密碼以繼續。</p>
+          <div className="mt-7 space-y-4">
+            <TextField id="admin-password" label="管理員密碼" value={password} onChange={setPassword} placeholder="輸入密碼" type="password" required />
+            {error && <FormError message="密碼不正確，或系統暫時無法驗證。請再試一次。" />}
+            <button type="button" disabled={pending || !password.trim()} onClick={submit} className="flex h-12 w-full items-center justify-center gap-2 rounded-xl bg-[#f47b35] px-6 text-sm font-black text-[#203640] shadow-[0_3px_0_#c85f27] transition hover:-translate-y-0.5 disabled:cursor-not-allowed disabled:opacity-50" data-testid="button-admin-login">{pending ? '驗證中…' : '登入看板'}<ArrowRight size={17} /></button>
+          </div>
+        </div>
+      </main>
+    </div>
+  );
 }
 
 function AdminDashboard() {
@@ -413,6 +458,8 @@ function AdminDashboard() {
     if (!needle) return submissions;
     return submissions.filter((item) => [item.fullName, item.unit, ...item.skills].join(' ').toLowerCase().includes(needle));
   }, [search, submissions]);
+  const isUnauthorized = submissionsQuery.isError && (submissionsQuery.error as { status?: number })?.status === 401;
+  if (isUnauthorized) return <AdminLogin onSuccess={() => { submissionsQuery.refetch(); summaryQuery.refetch(); }} />;
   const exportJson = () => {
     const blob = new Blob([JSON.stringify(filtered, null, 2)], { type: 'application/json' });
     const url = URL.createObjectURL(blob);
