@@ -1,0 +1,26 @@
+event_id,event_name,event_date,required_ic_count,required_skill_category
+E01,宣誓典禮與團集會,TBC,2,Drill & Ceremony Discipline
+E02,小隊急救章訓練班,TBC,2,First Aid & Health Safety
+E03,先鋒工程實踐日,TBC,3,Pioneering & Pioneering Design
+E04,團康與遊戲設計工作坊,TBC,2,MC, Games & Stage Performance
+E05,資訊與AI技能徽章日,TBC,2,IT, AI & Web Development
+E06,秋季野營與星象觀測,TBC,3,Camping & Map/Compass Navigation
+E07,童軍繩結與手工藝競賽,TBC,2,Handicrafts & Badge Crafts
+E08,水上安全與獨木舟體驗,TBC,3,Water Sports & Canoeing/Swimming
+E09,野外烹飪與伙食籌劃,TBC,2,Camp Cooking & Meal Logistics
+E10,自然生態與環保觀察日,TBC,2,Environmental & Nature Conservation
+E11,影音宣傳與攝影工作坊,TBC,2,Media, Photography & Graphic Design
+E12,步操與儀杖技能考核,TBC,2,Drill & Ceremony Discipline
+E13,兒童心理與小隊輔導研習,TBC,2,Child Psychology & Youth Counseling
+E14,團務行政與檔案管理培訓,TBC,2,Administration & Secretarial
+E15,年度預算與財務審核會,TBC,2,Finance, Accounting & Budgeting
+E16,裝備維護與物資清查日,TBC,2,Quartermaster & Equipment Management
+E17,車隊物流與運輸統籌,TBC,2,Logistics & Transport Management
+E18,小隊長領導力訓練營,TBC,3,Student / Youth Leader
+E19,家長同樂日與團康遊戲,TBC,2,Housewife / Homemaker
+E20,城市定向與地圖導航,TBC,3,Camping & Map/Compass Navigation
+E21,氣象觀察與天文知識日,TBC,2,Astronomy & Weather Observation
+E22,急救複訓與安全考核,TBC,2,First Aid & Health Safety
+E23,網站更新與數位徽章發放,TBC,2,IT, AI & Web Development
+E24,舞台劇與才藝展演晚會,TBC,3,MC, Games & Stage Performance
+E25,年度總結典禮與頒獎禮,TBC,3,Drill & Ceremony Discipline

@@ -1,0 +1,7 @@
+cub-scout-scheduler/
+├── .env                  # 存放 API Key 的環境變數檔
+├── requirements.txt      # 相依套件清單
+├── main.py               # 主執行程式
+├── leaders_data.json     # 領袖輸入資料 (模擬 Replit/Lovable 前端)
+├── events_data.csv       # 25 個活動 CSV 清單
+└── schedule_result.md    # 自動產生的排班結果 (執行後生成)

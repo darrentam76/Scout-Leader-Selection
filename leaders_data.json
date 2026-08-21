@@ -1,0 +1,182 @@
+[
+  {
+    "name": "Darren",
+    "gender": "M",
+    "years_of_experience": "5",
+    "work_background_scout_skill": "IT, AI & Web Development",
+    "target_ic_count": 3,
+    "preferred_partners": ["Ken", "Sarah"],
+    "preferred_events": ["E01", "E05", "E23"]
+  },
+  {
+    "name": "Ken",
+    "gender": "M",
+    "years_of_experience": "1",
+    "work_background_scout_skill": "First Aid & Health Safety",
+    "target_ic_count": 2,
+    "preferred_partners": ["Darren"],
+    "preferred_events": ["E02", "E22"]
+  },
+  {
+    "name": "Sarah",
+    "gender": "F",
+    "years_of_experience": "4",
+    "work_background_scout_skill": "MC, Games & Stage Performance",
+    "target_ic_count": 3,
+    "preferred_partners": ["Darren"],
+    "preferred_events": ["E04", "E19", "E24"]
+  },
+  {
+    "name": "Alex",
+    "gender": "M",
+    "years_of_experience": "6",
+    "work_background_scout_skill": "Pioneering & Pioneering Design",
+    "target_ic_count": 3,
+    "preferred_partners": ["Chris"],
+    "preferred_events": ["E03", "E06", "E20"]
+  },
+  {
+    "name": "Chris",
+    "gender": "M",
+    "years_of_experience": "2",
+    "work_background_scout_skill": "Camping & Map/Compass Navigation",
+    "target_ic_count": 3,
+    "preferred_partners": ["Alex"],
+    "preferred_events": ["E06", "E09", "E20"]
+  },
+  {
+    "name": "Jessica",
+    "gender": "F",
+    "years_of_experience": "3",
+    "work_background_scout_skill": "Water Sports & Canoeing/Swimming",
+    "target_ic_count": 3,
+    "preferred_partners": ["Eric"],
+    "preferred_events": ["E08", "E10"]
+  },
+  {
+    "name": "Eric",
+    "gender": "M",
+    "years_of_experience": "1",
+    "work_background_scout_skill": "Camp Cooking & Meal Logistics",
+    "target_ic_count": 2,
+    "preferred_partners": ["Jessica"],
+    "preferred_events": ["E08", "E09"]
+  },
+  {
+    "name": "Michael",
+    "gender": "M",
+    "years_of_experience": "8",
+    "work_background_scout_skill": "Drill & Ceremony Discipline",
+    "target_ic_count": 3,
+    "preferred_partners": ["Rachel"],
+    "preferred_events": ["E01", "E12", "E25"]
+  },
+  {
+    "name": "Rachel",
+    "gender": "F",
+    "years_of_experience": "2",
+    "work_background_scout_skill": "Handicrafts & Badge Crafts",
+    "target_ic_count": 3,
+    "preferred_partners": ["Michael"],
+    "preferred_events": ["E07", "E25"]
+  },
+  {
+    "name": "David",
+    "gender": "M",
+    "years_of_experience": "4",
+    "work_background_scout_skill": "Quartermaster & Equipment Management",
+    "target_ic_count": 3,
+    "preferred_partners": ["Tom"],
+    "preferred_events": ["E16", "E17"]
+  },
+  {
+    "name": "Tom",
+    "gender": "M",
+    "years_of_experience": "1",
+    "work_background_scout_skill": "Logistics & Transport Management",
+    "target_ic_count": 2,
+    "preferred_partners": ["David"],
+    "preferred_events": ["E16", "E17"]
+  },
+  {
+    "name": "Grace",
+    "gender": "F",
+    "years_of_experience": "5",
+    "work_background_scout_skill": "Administration & Secretarial",
+    "target_ic_count": 3,
+    "preferred_partners": [],
+    "preferred_events": ["E14", "E15", "E18"]
+  },
+  {
+    "name": "Henry",
+    "gender": "M",
+    "years_of_experience": "7",
+    "work_background_scout_skill": "Astronomy & Weather Observation",
+    "target_ic_count": 3,
+    "preferred_partners": [],
+    "preferred_events": ["E06", "E21"]
+  },
+  {
+    "name": "Ivy",
+    "gender": "F",
+    "years_of_experience": "2",
+    "work_background_scout_skill": "Child Psychology & Youth Counseling",
+    "target_ic_count": 3,
+    "preferred_partners": [],
+    "preferred_events": ["E13", "E18", "E19"]
+  },
+  {
+    "name": "Jack",
+    "gender": "M",
+    "years_of_experience": "3",
+    "work_background_scout_skill": "Media, Photography & Graphic Design",
+    "target_ic_count": 3,
+    "preferred_partners": [],
+    "preferred_events": ["E11", "E24"]
+  },
+  {
+    "name": "Karen",
+    "gender": "F",
+    "years_of_experience": "4",
+    "work_background_scout_skill": "Environmental & Nature Conservation",
+    "target_ic_count": 3,
+    "preferred_partners": [],
+    "preferred_events": ["E10", "E21"]
+  },
+  {
+    "name": "Leo",
+    "gender": "M",
+    "years_of_experience": "2",
+    "work_background_scout_skill": "Finance, Accounting & Budgeting",
+    "target_ic_count": 2,
+    "preferred_partners": ["Grace"],
+    "preferred_events": ["E15"]
+  },
+  {
+    "name": "Mona",
+    "gender": "F",
+    "years_of_experience": "6",
+    "work_background_scout_skill": "Housewife / Homemaker",
+    "target_ic_count": 3,
+    "preferred_partners": [],
+    "preferred_events": ["E09", "E19"]
+  },
+  {
+    "name": "Nick",
+    "gender": "M",
+    "years_of_experience": "1",
+    "work_background_scout_skill": "Student / Youth Leader",
+    "target_ic_count": 3,
+    "preferred_partners": ["Alex"],
+    "preferred_events": ["E03", "E18"]
+  },
+  {
+    "name": "Olivia",
+    "gender": "F",
+    "years_of_experience": "5",
+    "work_background_scout_skill": "First Aid & Health Safety",
+    "target_ic_count": 3,
+    "preferred_partners": ["Ken"],
+    "preferred_events": ["E02", "E22"]
+  }
+]
