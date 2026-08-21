@@ -15,7 +15,7 @@ const sections = [
   {
     icon: LockKeyhole,
     title: '儲存與存取安全',
-    body: '資料以加密連線（HTTPS）傳送並儲存於受管理的資料庫。名單頁面已加鎖，只有領隊團隊以密碼登入後才能查看；公開網絡無法讀取任何回覆內容。',
+    body: '資料以加密連線（HTTPS）傳送並儲存於受管理的資料庫。名單頁面已加鎖，只有領袖團隊以密碼登入後才能查看；公開網絡無法讀取任何回覆內容。',
   },
   {
     icon: CalendarDays,
@@ -25,7 +25,7 @@ const sections = [
   {
     icon: MessageCircle,
     title: 'AI 助手說明',
-    body: '頁面上的「資料私隱與流程助手」由 AI 生成內容，僅供參考。你的提問會經過第三方 AI 服務（DeepSeek）處理以產生回覆。請勿在對話中輸入身分證號碼、住址等敏感個人資料。如有疑問，請直接向領隊團隊查詢。',
+    body: '頁面上的「資料私隱與流程助手」由 AI 生成內容，僅供參考。你的提問會經過第三方 AI 服務（DeepSeek）處理以產生回覆。請勿在對話中輸入身分證號碼、住址等敏感個人資料。如有疑問，請直接向領袖團隊查詢。',
   },
 ];
 
@@ -38,25 +38,25 @@ export default function PrivacyPage() {
         </Link>
       </header>
       <main className="mx-auto max-w-3xl px-5 py-10 md:px-10 md:py-14">
-        <p className="mb-2 text-xs font-black tracking-[.16em] text-[#39725e]">私隱政策 · PRIVACY</p>
-        <h1 className="text-3xl font-black tracking-tight text-[#203640] md:text-4xl">你的資料，我們怎樣處理。</h1>
+        <p className="mb-2 text-xs font-black tracking-[.16em] text-[#3f7350]">私隱政策 · PRIVACY</p>
+        <h1 className="text-3xl font-black tracking-tight text-[#17402c] md:text-4xl">你的資料，我們怎樣處理。</h1>
         <p className="mt-4 text-sm leading-7 text-[#758185]">
           本頁說明「3rd Scout Troop Availability」如何按照香港《個人資料（私隱）條例》處理你所提供的資料。
         </p>
         <div className="mt-9 space-y-4">
           {sections.map((section) => (
             <section key={section.title} className="rounded-2xl border border-[#d9cfbd] bg-[#fbf8ef] p-5" data-testid={`card-privacy-${section.title}`}>
-              <h2 className="flex items-center gap-2.5 font-black text-[#203640]">
-                <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-[#eee8da] text-[#39725e]"><section.icon size={18} /></span>
+              <h2 className="flex items-center gap-2.5 font-black text-[#17402c]">
+                <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-[#eee8da] text-[#3f7350]"><section.icon size={18} /></span>
                 {section.title}
               </h2>
               <p className="mt-3 text-sm leading-7 text-[#536468]">{section.body}</p>
             </section>
           ))}
           <section className="rounded-2xl border border-[#d9cfbd] bg-[#eee8da]/60 p-5" data-testid="card-privacy-rights">
-            <h2 className="font-black text-[#203640]">查閱、更正及刪除</h2>
+            <h2 className="font-black text-[#17402c]">查閱、更正及刪除</h2>
             <p className="mt-3 text-sm leading-7 text-[#536468]">
-              你有權查閱及更正你的個人資料，亦可要求刪除。請直接聯絡領隊團隊提出，我們會盡快處理。
+              你有權查閱及更正你的個人資料，亦可要求刪除。請直接聯絡領袖團隊提出，我們會盡快處理。
             </p>
           </section>
         </div>
