@@ -1,0 +1,200 @@
+openapi: 3.1.0
+info:
+  # Do not change the title, if the title changes, the import paths will be broken
+  title: Api
+  version: 0.1.0
+  description: API specification
+servers:
+  - url: /api
+    description: Base API path
+tags:
+  - name: health
+    description: Health operations
+  - name: scout
+    description: Scout availability and preference operations
+paths:
+  /healthz:
+    get:
+      operationId: healthCheck
+      tags: [health]
+      summary: Health check
+      description: Returns server health status
+      responses:
+        "200":
+          description: Healthy
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/HealthStatus"
+  /scout/events:
+    get:
+      operationId: listScoutEvents
+      tags: [scout]
+      summary: List annual scout events
+      responses:
+        "200":
+          description: Event list
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/ScoutEvent"
+  /scout/submissions:
+    get:
+      operationId: listScoutSubmissions
+      tags: [scout]
+      summary: List leader preference submissions
+      responses:
+        "200":
+          description: Submission list
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/LeaderPreference"
+    post:
+      operationId: createScoutSubmission
+      tags: [scout]
+      summary: Submit leader preferences
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/LeaderPreferenceInput"
+      responses:
+        "201":
+          description: Created submission
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/LeaderPreference"
+        "400":
+          description: Invalid submission
+  /scout/summary:
+    get:
+      operationId: getScoutSummary
+      tags: [scout]
+      summary: Get submission summary
+      responses:
+        "200":
+          description: Summary
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ScoutSummary"
+  /scout/chat:
+    post:
+      operationId: chatWithScoutAssistant
+      tags: [scout]
+      summary: Ask the Scout privacy and allocation assistant
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ScoutChatInput"
+      responses:
+        "200":
+          description: Assistant reply
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ScoutChatReply"
+        "503":
+          description: Assistant unavailable
+components:
+  schemas:
+    HealthStatus:
+      type: object
+      properties:
+        status:
+          type: string
+      required:
+        - status
+    ScoutEvent:
+      type: object
+      required: [id, name, unit, date, helpers]
+      properties:
+        id: { type: string }
+        name: { type: string }
+        nameEn: { type: string }
+        unit: { type: string }
+        date: { type: string }
+        helpers: { type: number, format: int32 }
+    LeaderPreference:
+      type: object
+      required: [id, createdAt, fullName, gender, unit, yearsExp, isSenior, targetIcCount, skills, preferredIcEvents, helperEvents, preferredPartners, notes]
+      properties:
+        id: { type: string }
+        createdAt: { type: string }
+        fullName: { type: string }
+        gender: { type: string }
+        unit: { type: string }
+        yearsExp: { type: number, format: int32 }
+        isSenior: { type: boolean }
+        targetIcCount: { type: number, format: int32 }
+        skills:
+          type: array
+          items: { type: string }
+        preferredIcEvents:
+          type: array
+          items: { type: string }
+        helperEvents:
+          type: array
+          items: { type: string }
+        preferredPartners:
+          type: array
+          items: { type: string }
+        notes: { type: string }
+    LeaderPreferenceInput:
+      type: object
+      required: [fullName, gender, unit, yearsExp, isSenior, targetIcCount, skills, preferredIcEvents, helperEvents, preferredPartners, notes]
+      properties:
+        fullName: { type: string, minLength: 1 }
+        gender: { type: string, enum: [男, 女] }
+        unit: { type: string }
+        yearsExp: { type: number, format: int32, minimum: 0 }
+        isSenior: { type: boolean }
+        targetIcCount: { type: number, format: int32, minimum: 2, maximum: 4 }
+        skills:
+          type: array
+          maxItems: 5
+          items: { type: string }
+        preferredIcEvents:
+          type: array
+          items: { type: string }
+        helperEvents:
+          type: array
+          items: { type: string }
+        preferredPartners:
+          type: array
+          items: { type: string }
+        notes: { type: string }
+    ScoutSummary:
+      type: object
+      required: [totalSubmissions, seniorCount, topSkills]
+      properties:
+        totalSubmissions: { type: number, format: int32 }
+        seniorCount: { type: number, format: int32 }
+        topSkills:
+          type: array
+          items:
+            type: object
+            required: [skill, count]
+            properties:
+              skill: { type: string }
+              count: { type: number, format: int32 }
+    ScoutChatInput:
+      type: object
+      required: [message]
+      properties:
+        message: { type: string, minLength: 1, maxLength: 800 }
+    ScoutChatReply:
+      type: object
+      required: [reply]
+      properties:
+        reply: { type: string }
+

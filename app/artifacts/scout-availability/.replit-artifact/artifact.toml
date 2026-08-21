@@ -1,0 +1,28 @@
+kind = "web"
+previewPath = "/"
+title = "3rd Scout Troop Availability"
+description = "A Traditional Chinese-first mobile web app for 3rd Scout Troop leaders to share skills, event preferences, partner preferences, and availability for annual activity matching."
+version = "1.0.0"
+id = "artifacts/scout-availability"
+router = "path"
+
+[[services]]
+name = "web"
+paths = [ "/" ]
+localPort = 20866
+
+[services.development]
+run = "pnpm --filter @workspace/scout-availability run dev"
+
+[services.production]
+build = [ "pnpm", "--filter", "@workspace/scout-availability", "run", "build" ]
+serve = "static"
+publicDir = "artifacts/scout-availability/dist/public"
+
+[[services.production.rewrites]]
+from = "/*"
+to = "/index.html"
+
+[services.env]
+PORT = "20866"
+BASE_PATH = "/"

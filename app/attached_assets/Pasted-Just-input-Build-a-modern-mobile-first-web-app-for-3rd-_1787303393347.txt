@@ -1,0 +1,142 @@
+Just input Build a modern, mobile-first web app for "3rd Scout Troop (小三童軍)" to collect Leader Availability, Preferred Events, and Scout Expertise for annual activity matching.
+
+
+
+### 1. Visual Theme & Branding
+
+- Clean, professional Scout aesthetic using Scout Navy (#1E3A8A) primary accents, Forest Green (#15803D) highlights, and light gray background (#F8FAFC).
+
+- Support Traditional Chinese (繁體中文) as default, with English labels in muted text.
+
+- Responsive design with smooth animations using Tailwind CSS and shadcn/ui components.
+
+
+
+### 2. Multi-Step Form Structure
+
+
+
+#### Step 1: Leader Profile (領袖基本資料)
+
+- Full Name (姓名) - Text input (Required)
+
+- Primary Unit / Section (所屬小組/幼童軍團) - Select dropdown: [P4, P5, P6, General / Cross-Unit Scouter (特別組/總領袖)]
+
+- Years of Scouting Experience (童軍資歷/年資) - Number input (Required)
+
+- Auto-calculated Seniority Badge:
+
+  - If < 3 years: Show "Junior Scouter (新進領袖)" tag (Yellow badge)
+
+  - If >= 3 years: Show "Senior Scouter (資深領袖)" tag (Green badge)
+
+
+
+#### Step 2: 20 Scout Expertise & Background Selection (領袖技能與背景 - 複選)
+
+Multi-select card grid (checkboxes) allowing leaders to select up to 5 primary skills from the 20 official Scout categories:
+
+1. Pioneering & Pioneering Design (先鋒工程 / 繩結技能)
+
+2. Camping & Map/Compass Navigation (戶外露營 / 遠足導航)
+
+3. First Aid & Health Safety (急救 / 衛生保健)
+
+4. Water Sports & Canoeing/Swimming (水上活動 / 游泳獨木舟)
+
+5. IT, AI & Web Development (資訊科技 / AI 應用 / 網站開發)
+
+6. Media, Photography & Graphic Design (影音製作 / 攝影 / 宣傳設計)
+
+7. MC, Games & Stage Performance (活動主持 / 團康司儀 / 遊戲帶領)
+
+8. Handicrafts & Badge Crafts (手藝創作 / 徽章製作)
+
+9. Camp Cooking & Meal Logistics (野外烹飪 / 膳食籌劃)
+
+10. Astronomy & Weather Observation (天文 / 氣象觀察)
+
+11. Environmental & Nature Conservation (環保生態 / 自然觀察)
+
+12. Drill & Ceremony Discipline (隊伍紀律 / 步操儀仗)
+
+13. Child Psychology & Youth Counseling (兒童心理 / 社工輔導)
+
+14. Administration & Secretarial (行政管理 / 檔案文書)
+
+15. Finance, Accounting & Budgeting (財務會計 / 預算控管)
+
+16. Quartermaster & Equipment Management (物資採購 / 裝備管理)
+
+17. Logistics & Transport Management (車隊運輸 / 物流統籌)
+
+18. Housewife / Homemaker (全職家庭主婦/主夫)
+
+19. Student / Youth Leader (學生 / 青年領袖)
+
+20. Others / NA (其他 / 不適用)
+
+
+
+#### Step 3: Event & Role Preferences (活動意願與角色選擇)
+
+- Display interactive event cards fetched from the database or mock data (showing Event Name, Target Unit P4-P6, Date, and Required Helpers).
+
+- For each event, provide a 3-way toggle / selection:
+
+  - "Preferred IC (優先意願擔任主 IC)"
+
+  - "Helper Only / Joint Helper (願意擔任協助人員/幫手)"
+
+  - "Unavailable (不便出席)"
+
+- Minimum IC requirement warning if leader selects fewer than 2 preferred IC events.
+
+
+
+#### Step 4: Partner Preference & Final Submit (合作夥伴與備註)
+
+- Preferred Partner / Co-Leader (期望合作夥伴) - Multiselect or text search dropdown to select preferred co-leaders.
+
+- Special Notes / Availability Constraints (備註/特殊時間安排) - Textarea.
+
+- Final Submit Button with confirmation modal.
+
+
+
+### 3. Supabase Integration Requirements
+
+- Automatically create a PostgreSQL table named `leaders_preferences` with columns:
+
+  - `id` (uuid, primary key)
+
+  - `created_at` (timestamp)
+
+  - `full_name` (text)
+
+  - `unit` (text)
+
+  - `years_exp` (integer)
+
+  - `is_senior` (boolean)
+
+  - `skills` (text array)
+
+  - `preferred_ic_events` (text array)
+
+  - `helper_events` (text array)
+
+  - `preferred_partners` (text array)
+
+  - `notes` (text)
+
+- Include Row Level Security (RLS) allowing anonymous insert for submission.
+
+
+
+### 4. Admin View / Submission Confirmation
+
+- Show a clean "Thank You / 提交成功" confirmation screen displaying a summary of their submitted preferences.
+
+- Include an Admin Dashboard toggle to view all submissions in a table format with JSON export option for Python backend processing (`leaders_data.json`).  
+

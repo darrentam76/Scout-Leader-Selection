@@ -1,0 +1,164 @@
+Build a modern, mobile-first web app for "3rd Scout Troop (小三童軍)" to collect Leader Availability, Preferred Events, and Scout Expertise for annual activity matching, featuring a floating AI Chatbot for Data Privacy & Security assistance.
+
+---
+
+### 1. Role & Task Specifications
+You are building an end-to-end Cub Scout Leader Allocation & Data Collection System for the 3rd Scout Troop (小三童軍). The app ingests leader profiles, event preferences, and 20 expertise categories to optimize IC (In-Charge) deployment schedules for 25 annual activities under strict workload and seniority rules.
+
+---
+
+### 2. Visual Theme & Branding
+- **Color Palette:** Clean, professional Scout aesthetic using Scout Navy (`#1E3A8A`) primary accents, Forest Green (`#15803D`) highlights, and light gray background (`#F8FAFC`).
+- **Language:** Support Traditional Chinese (繁體中文) as default, with English labels in muted text.
+- **UI Framework:** Responsive design with smooth transitions using Tailwind CSS and shadcn/ui components.
+
+---
+
+### 3. Multi-Step Form Structure (Frontend UI)
+
+#### Step 1: Leader Profile (領袖基本資料)
+- **Full Name (姓名):** Text input (Required).
+- **Gender (性別):** Select dropdown [Male (男), Female (女)].
+- **Primary Unit / Section (所屬小組/幼童軍團):** Select dropdown [P4, P5, P6, General / Cross-Unit Scouter (特別組/總領袖)].
+- **Years of Scouting Experience (童軍資歷/年資):** Select dropdown [1 Year, 2 Years, 3 Years, 4-6 Years, 7-10 Years, 11-15 Years, 16-20 Years].
+- **Auto-calculated Seniority Badge:**
+  - If experience is 1 or 2 years: Display "Junior Scouter (新進領袖)" badge (Yellow).
+  - If experience is 3 years or above: Display "Senior Scouter (資深領袖)" badge (Green).
+- **Target IC Count (期望擔任主 IC 次數):** Select dropdown [2, 3, 4] *(Hard cap warning displayed: Maximum 3 times per leader)*.
+
+#### Step 2: 20 Scout Expertise & Background Selection (領袖技能與背景 - 複選)
+Multi-select card grid (checkboxes) allowing leaders to select up to 5 primary skills from the 20 official Scout categories:
+1. Pioneering & Pioneering Design (先鋒工程 / 繩結技能)
+2. Camping & Map/Compass Navigation (戶外露營 / 遠足導航)
+3. First Aid & Health Safety (急救 / 衛生保健)
+4. Water Sports & Canoeing/Swimming (水上活動 / 游泳獨木舟)
+5. IT, AI & Web Development (資訊科技 / AI 應用 / 網站開發)
+6. Media, Photography & Graphic Design (影音製作 / 攝影 / 宣傳設計)
+7. MC, Games & Stage Performance (活動主持 / 團康司儀 / 遊戲帶領)
+8. Handicrafts & Badge Crafts (手藝創作 / 徽章製作)
+9. Camp Cooking & Meal Logistics (野外烹飪 / 膳食籌劃)
+10. Astronomy & Weather Observation (天文 / 氣象觀察)
+11. Environmental & Nature Conservation (環保生態 / 自然觀察)
+12. Drill & Ceremony Discipline (隊伍紀律 / 步操儀仗)
+13. Child Psychology & Youth Counseling (兒童心理 / 社工輔導)
+14. Administration & Secretarial (行政管理 / 檔案文書)
+15. Finance, Accounting & Budgeting (財務會計 / 預算控管)
+16. Quartermaster & Equipment Management (物資採購 / 裝備管理)
+17. Logistics & Transport Management (車隊運輸 / 物流統籌)
+18. Housewife / Homemaker (全職家庭主婦/主夫)
+19. Student / Youth Leader (學生 / 青年領袖)
+20. Others / NA (其他 / 不適用)
+
+#### Step 3: Event & Role Preferences (活動意願與角色選擇)
+- Display interactive event cards fetched from database or mock data (showing Event Name, Target Unit P4-P6, Date [Status: TBC], and Required Helpers).
+- For each event, provide a 3-way toggle / selection:
+  - "Preferred IC (優先意願擔任主 IC)"
+  - "Helper Only / Joint Helper (願意擔任協助人員/幫手)"
+  - "Unavailable (不便出席)"
+- Minimum IC requirement warning if leader selects fewer than 2 preferred IC events.
+
+#### Step 4: Partner Preference & Final Submit (合作夥伴與備註)
+- **Preferred Partner / Co-Leader (期望合作夥伴):** Multi-select or text search dropdown to select preferred co-leaders.
+- **Special Notes / Availability Constraints (備註/特殊時間安排):** Textarea.
+- **Final Submit Button** with a modal summary confirmation.
+
+---
+
+### 4. Floating AI Chatbot Component (`ChatWidget.jsx`)
+Include a floating chat widget at the bottom right corner of the application. 
+- **Purpose:** Provide 24/7 assistance on system usage, IC allocation rules, and data privacy/security explanations.
+- **Backend Edge Function Connection:** Connect the widget to a Supabase Edge Function (`chat-assistant`) running DeepSeek API.
+- **System Prompt for Edge Function (`index.ts`):**
+
+```typescript
+import { serve } from "[https://deno.land/std@0.168.0/http/server.ts](https://deno.land/std@0.168.0/http/server.ts)";
+
+declare const Deno: {
+  env: {
+    get(name: string): string | undefined;
+  };
+};
+
+const corsHeaders = {
+  "Access-Control-Allow-Origin": "*",
+  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
+  "Access-Control-Allow-Methods": "POST, OPTIONS",
+  "X-Content-Type-Options": "nosniff",
+  "X-Frame-Options": "DENY",
+  "Strict-Transport-Security": "max-age=31536000; includeSubDomains",
+};
+
+const CHAT_SYSTEM_PROMPT = `
+# Role & Identity
+You are the **Cub Scout Leader Allocation & Security Assistant** for the 3rd Scout Troop (小三童軍). Your main role is to guide leaders through submitting their preferences, explain the application's purpose, and answer questions regarding data protection, privacy, and security.
+
+# Domain Boundary Guardrails
+1. STRICT TOPIC LIMITATION: You MUST ONLY answer questions related to:
+   - App purpose and IC allocation workflow across 25 annual activities.
+   - Leader profile fields, 20 Scout expertise categories, and event preferences.
+   - Data privacy, security, encryption, and handling protocols.
+2. OFF-TOPIC REFUSAL: If a user asks about unrelated general topics, decline politely with:
+   > "我是小三童軍領袖資料收集與資安說明助手。我只能協助解答關於本系統用途、領袖意願填報及資料隱私安全相關的問題。"
+
+# Key Data Privacy & Security Knowledge Base
+1. Data Minimization & Lawful Use:
+   - We only collect necessary scouting information (Name, Gender, Unit, Experience, Skills, Event Preferences).
+   - Data is used EXCLUSIVELY for activity leader matching and workload balance.
+2. Retention & Automatic Deletion:
+   - Data is retained for maximum 6 months. An automated database job permanently deletes all submissions after 180 days.
+3. Access & Data Correction Rights:
+   - Leaders can log in at any time to view, update, or correct their preferences under PDPO regulations.
+4. Security & RLS (Row Level Security):
+   - All connections use TLS 1.3 HTTPS encryption.
+   - Database Row Level Security (RLS) ensures leaders can ONLY view their own data.
+   - Admin access is protected by multi-factor authentication (MFA) and audited by logging triggers.
+   - API keys are secured in backend serverless vaults, never exposed in browser source code.
+
+Tone: Professional, reassuring, transparent, and supportive. Respond in Traditional Chinese (繁體中文).
+`;
+
+serve(async (req: { method: string; json: () => PromiseLike<{ messages: any }> | { messages: any } }) => {
+  if (req.method === "OPTIONS") {
+    return new Response("ok", { headers: corsHeaders });
+  }
+
+  try {
+    const { messages } = await req.json();
+    const apiKey = Deno.env.get("DEEPSEEK_API_KEY");
+
+    if (!apiKey) {
+      throw new Error("DEEPSEEK_API_KEY is not set in environment variables.");
+    }
+
+    const fullMessages = [
+      { role: "system", content: CHAT_SYSTEM_PROMPT },
+      ...(messages || []),
+    ];
+
+    const response = await fetch("[https://api.deepseek.com/chat/completions](https://api.deepseek.com/chat/completions)", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": `Bearer ${apiKey}`,
+      },
+      body: JSON.stringify({
+        model: "deepseek-chat",
+        messages: fullMessages,
+        temperature: 0.3,
+      }),
+    });
+
+    const data = await response.json();
+
+    return new Response(JSON.stringify(data), {
+      headers: { ...corsHeaders, "Content-Type": "application/json" },
+      status: 200,
+    });
+  } catch (error) {
+    const message = error instanceof Error ? error.message : String(error);
+    return new Response(JSON.stringify({ error: message }), {
+      headers: { ...corsHeaders, "Content-Type": "application/json" },
+      status: 500,
+    });
+  }
+});
