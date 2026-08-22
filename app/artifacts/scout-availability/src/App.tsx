@@ -260,7 +260,7 @@ function ChatWidget() {
     });
   };
   return (
-    <div className="fixed bottom-5 right-5 z-50">
+    <div className="fixed bottom-5 left-5 z-50">
       {open && (
         <section className="mb-3 w-[min(23rem,calc(100vw-2.5rem))] overflow-hidden rounded-3xl border border-[#d9cfbd] bg-[#fbf8ef] shadow-[0_22px_60px_rgba(23,64,44,.28)]" aria-label="資料私隱與流程助手" data-testid="chat-widget">
           <header className="flex items-center gap-3 bg-[#17402c] px-4 py-3.5 text-[#f7f1df]">
